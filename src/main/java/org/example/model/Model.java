@@ -21,6 +21,7 @@ public class Model extends Observable {
     }
 
     public void addShape(MyShape shape) {
+        drawableShape = shape;
         shapeList.add(shape);
     }
     public void setMyShape(MyShape myShape) {
