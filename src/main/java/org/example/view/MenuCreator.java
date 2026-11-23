@@ -8,6 +8,7 @@ import org.example.model.factory.ShapeType;
 import org.example.view.menu.AppCommand;
 import org.example.view.menu.CommandActionListener;
 import org.example.view.menu.SwitchFill;
+import org.example.view.menu.SwitchShape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +22,8 @@ public class MenuCreator {
     private ShapeState shapeState;
     @Setter
     private Controller controller;
+    private JRadioButtonMenuItem squareItem;
+    private JRadioButtonMenuItem circleItem;
 
     private JRadioButtonMenuItem fillItem, noFillItem;
 
@@ -75,6 +78,17 @@ public class MenuCreator {
         AppCommand noFillCommand = new SwitchFill(false, shapeState, fillItem, noFillItem);
         menuItems.add(new CommandActionListener("Без заливки", noFillIco, noFillCommand));
 
+
+        URL recUrl = getClass().getClassLoader().getResource("ico/rectangular_16x16.png");
+        ImageIcon recIco = recUrl == null ? null : new ImageIcon(recUrl);
+        AppCommand shapeCommand = new SwitchShape(shapeState,ShapeType.RECTANGULAR_SHAPE, squareItem);
+        menuItems.add(new CommandActionListener("Квадрат", recIco, shapeCommand));
+
+        URL ellUrl = getClass().getClassLoader().getResource("ico/ellipse_16x16.png");
+        ImageIcon ellIco = ellUrl == null ? null : new ImageIcon(ellUrl);
+        AppCommand shapestate = new SwitchShape(shapeState,ShapeType.ELLIPSE_SHAPE, circleItem);
+        menuItems.add(new CommandActionListener("Круг", ellIco, shapestate));
+
         return menuItems;
     }
 
@@ -123,10 +137,16 @@ public class MenuCreator {
         ButtonGroup group = new ButtonGroup();
         JMenu shapeMenu = new JMenu("Фигура");
 
-        JRadioButtonMenuItem squareItem = new JRadioButtonMenuItem("Прямоугольник", true);
-        squareItem.addActionListener(action -> shapeState.setShapeType(ShapeType.RECTANGULAR_SHAPE));
+
+        squareItem = new JRadioButtonMenuItem("Прямоугольник", true);
+        circleItem = new JRadioButtonMenuItem("Круг", true);
+        squareItem.addActionListener(new CommandActionListener(new SwitchShape(shapeState, ShapeType.RECTANGULAR_SHAPE, squareItem)));
+        circleItem.addActionListener(new CommandActionListener(new SwitchShape(shapeState, ShapeType.ELLIPSE_SHAPE, circleItem)));
+
         shapeMenu.add(squareItem);
+        shapeMenu.add(circleItem);
         group.add(squareItem);
+        group.add(circleItem);
 
         return  shapeMenu;
     }
