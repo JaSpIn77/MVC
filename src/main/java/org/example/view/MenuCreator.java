@@ -3,13 +3,9 @@ package org.example.view;
 import lombok.Setter;
 import org.example.controller.Controller;
 import org.example.controller.action.AppAction;
-import org.example.view.menu.SwitchAction;
+import org.example.view.menu.*;
 import org.example.model.factory.ShapeState;
 import org.example.model.factory.ShapeType;
-import org.example.view.menu.AppCommand;
-import org.example.view.menu.CommandActionListener;
-import org.example.view.menu.SwitchFill;
-import org.example.view.menu.SwitchShape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,6 +26,10 @@ public class MenuCreator {
 
     private JRadioButtonMenuItem drawItem;
     private JRadioButtonMenuItem moveItem;
+    private JRadioButtonMenuItem rgbItem;
+
+
+
 
     private MenuCreator() {
 
@@ -103,6 +103,12 @@ public class MenuCreator {
         AppCommand moveCommand = new SwitchAction(controller, SwitchAction.ActionType.MOVE, moveItem);
         menuItems.add(new CommandActionListener("Перемещать", moveIco, moveCommand));
 
+        URL rgbUrl = getClass().getClassLoader().getResource("ico/color_16x16.png");
+        ImageIcon rgbIco = rgbUrl == null ? null : new ImageIcon(rgbUrl);
+        AppCommand rgbCommand = new SwitchColor(shapeState,false, Color.BLACK, rgbItem);
+        menuItems.add(new CommandActionListener("Выбор цвета", rgbIco, rgbCommand));
+
+
 
         return menuItems;
     }
@@ -139,7 +145,7 @@ public class MenuCreator {
         shapeMenu.add(blueItem);
         group.add(blueItem);
 
-        JRadioButtonMenuItem rgbItem = new JRadioButtonMenuItem("Выбор цвета");
+        rgbItem = new JRadioButtonMenuItem("Выбор цвета");
         rgbItem.addActionListener(action -> shapeState.setColor(JColorChooser.showDialog(null, "Выбор цвета", Color.BLACK)));
 
         shapeMenu.add(rgbItem);
