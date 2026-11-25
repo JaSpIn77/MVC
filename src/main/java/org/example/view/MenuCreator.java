@@ -3,6 +3,7 @@ package org.example.view;
 import lombok.Setter;
 import org.example.controller.Controller;
 import org.example.controller.action.AppAction;
+import org.example.view.menu.SwitchAction;
 import org.example.model.factory.ShapeState;
 import org.example.model.factory.ShapeType;
 import org.example.view.menu.AppCommand;
@@ -26,6 +27,9 @@ public class MenuCreator {
     private JRadioButtonMenuItem circleItem;
 
     private JRadioButtonMenuItem fillItem, noFillItem;
+
+    private JRadioButtonMenuItem drawItem;
+    private JRadioButtonMenuItem moveItem;
 
     private MenuCreator() {
 
@@ -88,6 +92,17 @@ public class MenuCreator {
         ImageIcon ellIco = ellUrl == null ? null : new ImageIcon(ellUrl);
         AppCommand shapestate = new SwitchShape(shapeState,ShapeType.ELLIPSE_SHAPE, circleItem);
         menuItems.add(new CommandActionListener("Круг", ellIco, shapestate));
+
+        URL drawUrl = getClass().getClassLoader().getResource("ico/draw_16x16.png");
+        ImageIcon drawIco = drawUrl == null ? null : new ImageIcon(drawUrl);
+        AppCommand drawCommand = new SwitchAction(controller, SwitchAction.ActionType.DRAW, drawItem);
+        menuItems.add(new CommandActionListener("Рисовать", drawIco, drawCommand));
+
+        URL moveUrl = getClass().getClassLoader().getResource("ico/move_16x16.png");
+        ImageIcon moveIco = moveUrl == null ? null : new ImageIcon(moveUrl);
+        AppCommand moveCommand = new SwitchAction(controller, SwitchAction.ActionType.MOVE, moveItem);
+        menuItems.add(new CommandActionListener("Перемещать", moveIco, moveCommand));
+
 
         return menuItems;
     }
@@ -154,10 +169,17 @@ public class MenuCreator {
         ButtonGroup group = new ButtonGroup();
         JMenu actionMenu = new JMenu("Действие");
 
-        JRadioButtonMenuItem drawItem = new JRadioButtonMenuItem("Рисовать", true);
+        drawItem = new JRadioButtonMenuItem("Рисовать", true);
         drawItem.addActionListener(action -> controller.switchActionDraw());
         actionMenu.add(drawItem);
         group.add(drawItem);
+
+        moveItem = new JRadioButtonMenuItem("Перемещать");
+        moveItem.addActionListener(new CommandActionListener(
+                new SwitchAction(controller, SwitchAction.ActionType.MOVE, moveItem)));
+        actionMenu.add(moveItem);
+        group.add(moveItem);
+
 
         return  actionMenu;
     }
